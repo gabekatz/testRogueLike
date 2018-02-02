@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { cPlayer } from '../shared/cPlayer';
+import { cProjectile } from '../shared/cProjectile';
 import { AI } from '../services/AI';
 // import { setInterval } from 'timers';
 
@@ -15,18 +16,22 @@ export class BattlescreenComponent implements OnInit{
   size: number = 800;
   height: number = 800;
   width: number = 1300;
-  facing: string = 'down';
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   public player1: cPlayer;
   public eKnight: Array<cPlayer> = [];
+  public attacks: Array<cProjectile> = [];
 
   constructor(public AI: AI) { }
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
+    event.preventDefault();
     this.key = event.key;
     console.log(this.key)
+    if (this.key === ' ') {
+        this.attack(this.player1);
+    }
     this.move(this.key, this.player1)
   }
 
@@ -51,6 +56,11 @@ export class BattlescreenComponent implements OnInit{
         knight.draw();
     })
     this.player1.draw()
+    this.attacks.forEach((atk)=>{
+        if (atk.active){
+            atk.draw();
+        }
+    });
     this.createGrid(this.size);
   }
 
@@ -99,6 +109,25 @@ export class BattlescreenComponent implements OnInit{
   // this.player = document.getElementById(JSON.stringify(this.currPos))
   // this.player.style.backgroundColor = 'black'
   }
+
+  attack = (player) => {
+      let atk;
+      if (player.direction === 'down') {
+        atk = new cProjectile(player.x, player.y + 100, 5, 'blue', 2, this.ctx);
+      } else if (player.direction === 'right') {
+        atk = new cProjectile(player.x + 100, player.y, 5, 'blue', 2, this.ctx);
+      } else if (player.direction === 'up') {
+        atk = new cProjectile(player.x, player.y - 100, 5, 'blue', 2, this.ctx);
+      } else if (player.direction === 'left') {
+        atk = new cProjectile(player.x - 100, player.y, 5, 'blue', 2, this.ctx);
+      }
+      this.attacks.push(atk);
+      setTimeout(() => {
+        atk.active = false;
+      },250)
+  }
+
+
 }
 
 //make modular------

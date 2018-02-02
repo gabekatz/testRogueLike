@@ -53,7 +53,7 @@ export class AI {
             knight.direction = 'right';
           } else {
             knight.y += 100;
-            knight.direction = 'up';
+            knight.direction = 'down';
           }
         } else if (px === x) {
           if (py > y) {

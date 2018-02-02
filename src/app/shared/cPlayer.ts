@@ -1,6 +1,7 @@
-import { cVector } from './cVector';
+import { cVector} from './cVector';
+import { iShape } from './iShape';
 
-export class cPlayer implements iPlayer {
+export class cPlayer implements iShape {
   public x: number = 0;
   public y: number = 0;
   public radius: number = 10;
@@ -19,7 +20,7 @@ export class cPlayer implements iPlayer {
     y: number,
     radius: number,
     color: string = "red",
-    line_width: number = 2,
+    lineWidth: number = 2,
     ctx: any,
     health: number
     // direction: number = 
@@ -30,7 +31,7 @@ export class cPlayer implements iPlayer {
     this.radius = radius;
     this.color = color;
     this.ctx = ctx;
-    this.lineWidth = line_width;
+    this.lineWidth = lineWidth;
     this.health = health;
   }
 
@@ -52,10 +53,5 @@ export class cPlayer implements iPlayer {
   }
 }
 
-interface iPlayer {
-  draw(): void;
-  x: number;
-  y: number;
-  color: string;
-  lineWidth: number;
-}
+
+
