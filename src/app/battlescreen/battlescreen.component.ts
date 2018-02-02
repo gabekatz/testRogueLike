@@ -27,21 +27,22 @@ export class BattlescreenComponent implements OnInit{
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     event.preventDefault();
-    this.key = event.key;
-    console.log(this.key)
-    if (this.key === ' ') {
-        this.attack(this.player1);
+    if (!this.player1.active){
+        this.key = event.key;
+        console.log(this.key)
+        if (this.key === ' ') {
+            this.attack(this.player1);
+        }
+        this.move(this.key, this.player1)
     }
-    this.move(this.key, this.player1)
   }
 
   ngOnInit() {
     this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
     this.ctx = this.canvas.getContext("2d");
     this.player1 = new cPlayer(50, 50, 50, "blue", 2, this.ctx, 3);
-    this.eKnight[0] = new cPlayer(750,750,50, 'red', 2, this.ctx, 1); 
-    this.eKnight[1] = new cPlayer(750,750,50, 'green', 2, this.ctx, 1); 
-    console.log(this.player1)
+    this.eKnight[0] = new cPlayer(750,750,50, 'red', 2, this.ctx, 1, this.eKnight.length); 
+    this.eKnight[1] = new cPlayer(750,750,50, 'green', 2, this.ctx, 1, this.eKnight.length);
     setInterval(() => {
         this.AI.moveKnights(this.eKnight, this.player1);
     }, 1000)
@@ -67,13 +68,13 @@ export class BattlescreenComponent implements OnInit{
 
   createGrid = (x) => {
     this.ctx.strokeStyle = 'white';
-    for (var i = 0; i <= this.width*10; i+=100) {
+    for (var i = 0; i <= this.width * 10; i += 100) {
         this.ctx.beginPath();
         this.ctx.moveTo(i, 0);
         this.ctx.lineTo(i, this.width)
         this.ctx.stroke();
     } 
-    for (var j = 0; j <=this.height*10; j+= 100 ) {
+    for (var j = 0; j <= this.height * 10; j += 100 ) {
         this.ctx.beginPath();
         this.ctx.moveTo(0, j);
         this.ctx.lineTo(this.width,j);
@@ -82,6 +83,8 @@ export class BattlescreenComponent implements OnInit{
   };
 
   move = (direction, player) => {
+    let tempX = player.x;
+    let tempY = player.y;
     if (direction === 'w') {
       if (player.y - 100 >= 0){
           player.y -= 100
@@ -106,11 +109,19 @@ export class BattlescreenComponent implements OnInit{
       player.direction = 'left';
     }
 
+    this.eKnight.forEach((knight) => {
+        console.log(knight)
+        if (knight.health > 0 && knight.x === player.x && knight.y === player.y) {
+            player.x = tempX;
+            player.y = tempY;
+        }
+    })
   // this.player = document.getElementById(JSON.stringify(this.currPos))
   // this.player.style.backgroundColor = 'black'
   }
 
   attack = (player) => {
+      player.active = true;
       let atk;
       if (player.direction === 'down') {
         atk = new cProjectile(player.x, player.y + 100, 5, 'blue', 2, this.ctx);
@@ -122,9 +133,23 @@ export class BattlescreenComponent implements OnInit{
         atk = new cProjectile(player.x - 100, player.y, 5, 'blue', 2, this.ctx);
       }
       this.attacks.push(atk);
+
+      this.eKnight.forEach((knight)=> {
+          console.log(atk.position, knight.position)
+          if(atk.x === knight.x && atk.y === knight.y) {
+              knight.health -= 1
+              if (knight.health <= 0) {
+                  console.log(knight.idx);
+                  delete this.eKnight[knight.idx]
+              }
+          }
+          
+      })
+
       setTimeout(() => {
         atk.active = false;
-      },250)
+        player.active = false;
+      }, 250)
   }
 
 

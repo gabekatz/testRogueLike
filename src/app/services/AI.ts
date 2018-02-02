@@ -9,6 +9,8 @@ export class AI {
   moveKnights(knights, player) {
     console.log('running')
     knights.forEach((knight) => {
+      if (knight.health > 0) {
+
       let x = knight.x;
       let y = knight.y;
       let px = player.x;
@@ -73,6 +75,7 @@ export class AI {
           }
         }
       }
+    }
     })
   }
 

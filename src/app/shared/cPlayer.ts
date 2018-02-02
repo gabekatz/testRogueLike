@@ -8,13 +8,15 @@ export class cPlayer implements iShape {
   public lineWidth: number = 2;
   public color: string = 'red';
   public position: cVector = new cVector(this.x, this.y);
-  ctx: CanvasRenderingContext2D;
+  public ctx: CanvasRenderingContext2D;
   public health: number
   public down: Array<number> = [Math.PI * 0.65, Math.PI * 0.35];
   public right: Array<number> = [Math.PI * 0.15, Math.PI * -0.15];
   public left: Array<number> = [Math.PI * 1.15, Math.PI * 0.85];
   public up: Array<number> = [Math.PI * 1.65, Math.PI * 1.35];
   public direction: string = 'down';
+  public active: boolean = false;
+  public idx: number;
   constructor(
     x: number,
     y: number,
@@ -22,7 +24,8 @@ export class cPlayer implements iShape {
     color: string = "red",
     lineWidth: number = 2,
     ctx: any,
-    health: number
+    health: number,
+    idx: number = 0
     // direction: number = 
     
   ) {
@@ -33,6 +36,7 @@ export class cPlayer implements iShape {
     this.ctx = ctx;
     this.lineWidth = lineWidth;
     this.health = health;
+    this.idx = idx
   }
 
   public draw = (): void => {
@@ -45,8 +49,12 @@ export class cPlayer implements iShape {
       this.ctx.stroke();
       this.ctx.beginPath();
       this.ctx.moveTo(this.x, this.y);
-      this.ctx.arc(this.x, this.y, this.radius, this[this.direction][0], this[this.direction][1]);
+      this.ctx.arc(this.x, this.y, this.radius, this[this.direction][1], this[this.direction][0]);
       this.ctx.lineTo(this.x, this.y);
+      if (this.active) {
+        this.ctx.fillStyle = this.color;
+        this.ctx.fill();
+      }
       this.ctx.stroke();
       this.ctx.restore();
     }
