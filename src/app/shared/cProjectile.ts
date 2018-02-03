@@ -34,7 +34,7 @@ export class cProjectile implements iShape {
       this.ctx.beginPath();
       this.ctx.strokeStyle = this.color;
       this.ctx.lineWidth = this.lineWidth;
-      this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI);
+      this.ctx.arc(this.x, this.y, this.radius, 0, 2* Math.PI);
       this.ctx.fillStyle = this.color;
       this.ctx.fill();
       this.ctx.stroke();

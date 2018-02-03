@@ -1,5 +1,6 @@
 import { cVector} from './cVector';
 import { iShape } from './iShape';
+import { gridActions } from '../services/gridActions';
 
 export class cPlayer implements iShape {
   public x: number = 0;
@@ -25,9 +26,7 @@ export class cPlayer implements iShape {
     lineWidth: number = 2,
     ctx: any,
     health: number,
-    idx: number = 0
-    // direction: number = 
-    
+    idx: number = 0,
   ) {
     this.x = x;
     this.y = y;

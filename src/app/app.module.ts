@@ -6,7 +6,7 @@ import { BattlescreenComponent } from './battlescreen/battlescreen.component';
 
 import { AI } from './services/AI';
 import { gridActions } from './services/gridActions';
-import { PlayerAction } from './services/playerActions';
+import { playerAction } from './services/playerActions';
 
 @NgModule({
   declarations: [
@@ -19,7 +19,7 @@ import { PlayerAction } from './services/playerActions';
   providers: [
     AI,
     gridActions,
-    PlayerAction
+    playerAction
   ],
   bootstrap: [AppComponent]
 })

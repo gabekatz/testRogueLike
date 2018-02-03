@@ -4,7 +4,7 @@ import { cProjectile } from '../shared/cProjectile';
 
 import { AI } from '../services/AI';
 import { gridActions } from '../services/gridActions';
-import { PlayerAction } from '../services/playerActions';
+import { playerAction } from '../services/playerActions';
 
 @Component({
   selector: 'app-battlescreen',
@@ -24,7 +24,7 @@ export class BattlescreenComponent implements OnInit{
   public eKnight: Array<cPlayer> = [];
   public enemyCount: number = 0
 
-  constructor(public AI: AI, public grid: gridActions, public playerAction: PlayerAction) { }
+  constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) { }
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -35,7 +35,7 @@ export class BattlescreenComponent implements OnInit{
         if (this.key === ' ') {
             this.playerAction.attack(this.player1, this.eKnight);
         }
-        this.playerAction.move(this.key, this.player1, this.eKnight);
+        this.playerAction.move(this.key, this.player1);
     }
   }
 
@@ -44,10 +44,10 @@ export class BattlescreenComponent implements OnInit{
     this.ctx = this.canvas.getContext("2d");
     this.grid.defineCtx(this.ctx, this.width, this.height);
     this.playerAction.init();
-    this.player1 = new cPlayer(50, 50, 50, "blue", 2, this.ctx, 3);
-    this.eKnight[0] = new cPlayer(750,750,50, 'red', 2, this.ctx, 1, this.enemyCount); 
+    this.player1 = this.playerAction.newPlayer(50, 50, "blue",  3);
+    this.eKnight[0] = this.playerAction.newPlayer(750,750, 'red',1, this.enemyCount); 
     this.enemyCount++;
-    this.eKnight[1] = new cPlayer(750,750,50, 'green', 2, this.ctx, 1, this.enemyCount);
+    this.eKnight[1] = this.playerAction.newPlayer(850,750, 'green', 1, this.enemyCount);
     this.enemyCount++;
     setInterval(() => {
         this.AI.moveKnights(this.eKnight, this.player1);

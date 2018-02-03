@@ -1,9 +1,10 @@
 import { gridActions } from './gridActions';
 import { cProjectile } from '../shared/cProjectile';
 import { Injectable } from '@angular/core';
+import { cPlayer } from '../shared/cPlayer';
 
 @Injectable()
-export class PlayerAction  {
+export class playerAction  {
   public width: number;
   public height: number;
   public attacks: Array<cProjectile> = [];
@@ -23,42 +24,54 @@ export class PlayerAction  {
     this.width = this.grid.width;
     this.height = this.grid.height;
   }
+//new cPlayer(50, 50, 50, "blue", 2, this.ctx, 3);
+  newPlayer = (x, y, color, hp, characterIdx?) => {
+    this.grid.toggleSpace(Math.floor(x / 100), Math.floor(y / 100))
+    return new cPlayer(x, y, 50, color, 2, this.grid.ctx, hp, characterIdx)
+  }
 
-  move = (direction, player, enemies) => {
+  move = (direction, player) => {
     console.log('trying to move', player)
-    let tempX = player.x;
-    let tempY = player.y;
+    // let tempX = player.x;
+    // let tempY = player.y;
+    let idxY = Math.floor(player.y / 100)
+    let idxX = Math.floor(player.x / 100)
+    console.log(this.grid.matrix, idxX, idxY)
+    this.grid.toggleSpace(idxX, idxY)
     if (direction === 'w') {
-      if (player.y - 100 >= 0){
+      if (this.grid.matrix[idxY - 1] && this.grid.matrix[idxY - 1][idxX]){
           player.y -= 100
         }
         player.direction = 'up';
+
     } else if (direction === 'd') {
-      if (player.x + 100 <= this.width){
+      if (this.grid.matrix[idxY][idxX + 1]){
           player.x += 100
       }
       player.direction = 'right';
       console.log(player)
       //player.position.rotate(Math.PI*0,3)
     } else if (direction === 's') {
-      if (player.y + 100 <= this.height){
+
+      if (this.grid.matrix[idxY + 1] && this.grid.matrix[idxY + 1][idxX]){
           player.y += 100
       }
       player.direction = 'down';
     } else if (direction === 'a') {
-      if (player.x - 100 >= 0) {
+      if (this.grid.matrix[idxY][idxX - 1]) { //needs to be idx +1
           player.x -= 100
       }
       player.direction = 'left';
     }
-
-    enemies.forEach((knight) => {
-        console.log(knight)
-        if (knight.health > 0 && knight.x === player.x && knight.y === player.y) {
-            player.x = tempX;
-            player.y = tempY;
-        }
-    })
+    this.grid.toggleSpace(Math.floor(player.x / 100), Math.floor(player.y / 100))
+    
+    // enemies.forEach((knight) => {
+    //     console.log(knight)
+    //     if (knight.health > 0 && knight.x === player.x && knight.y === player.y) {
+    //         player.x = tempX;
+    //         player.y = tempY;
+    //     }
+    // })
   // this.player = document.getElementById(JSON.stringify(this.currPos))
   // this.player.style.backgroundColor = 'black'
   }
@@ -95,3 +108,4 @@ export class PlayerAction  {
       }, 250)
   }
 }
+
