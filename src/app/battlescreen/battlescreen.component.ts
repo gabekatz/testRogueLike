@@ -13,8 +13,6 @@ import { playerAction } from '../services/playerActions';
 })
 export class BattlescreenComponent implements OnInit{
   currPos: number = 0;
-  player: HTMLElement;
-  key: any;
   size: number = 800;
   height: number = 800;
   width: number = 1300;
@@ -30,12 +28,12 @@ export class BattlescreenComponent implements OnInit{
   handleKeyboardEvent(event: KeyboardEvent) {
     event.preventDefault();
     if (!this.player1.active){
-        this.key = event.key;
-        console.log(this.key)
-        if (this.key === ' ') {
+        let key = event.key;
+        console.log(key)
+        if (key === ' ') {
             this.playerAction.attack(this.player1, this.eKnight);
         }
-        this.playerAction.move(this.key, this.player1);
+        this.playerAction.move(key, this.player1);
     }
   }
 

@@ -24,18 +24,17 @@ export class playerAction  {
     this.width = this.grid.width;
     this.height = this.grid.height;
   }
-//new cPlayer(50, 50, 50, "blue", 2, this.ctx, 3);
+
   newPlayer = (x, y, color, hp, characterIdx?) => {
     this.grid.toggleSpace(Math.floor(x / 100), Math.floor(y / 100))
     return new cPlayer(x, y, 50, color, 2, this.grid.ctx, hp, characterIdx)
   }
 
   move = (direction, player) => {
-    console.log('trying to move', player)
     // let tempX = player.x;
     // let tempY = player.y;
-    let idxY = Math.floor(player.y / 100)
-    let idxX = Math.floor(player.x / 100)
+    let idxY = Math.floor(player.y / 100);
+    let idxX = Math.floor(player.x / 100);
     console.log(this.grid.matrix, idxX, idxY)
     this.grid.toggleSpace(idxX, idxY)
     if (direction === 'w') {
@@ -80,23 +79,23 @@ export class playerAction  {
       player.active = true;
       let atk;
       if (player.direction === 'down') {
-        atk = new cProjectile(player.x, player.y + 100, 5, 'blue', 2, this.ctx);
+        atk = new cProjectile(player.x, player.y + 100, 5, player.color, 2, this.ctx);
       } else if (player.direction === 'right') {
-        atk = new cProjectile(player.x + 100, player.y, 5, 'blue', 2, this.ctx);
+        atk = new cProjectile(player.x + 100, player.y, 5, player.color, 2, this.ctx);
       } else if (player.direction === 'up') {
-        atk = new cProjectile(player.x, player.y - 100, 5, 'blue', 2, this.ctx);
+        atk = new cProjectile(player.x, player.y - 100, 5, player.color, 2, this.ctx);
       } else if (player.direction === 'left') {
-        atk = new cProjectile(player.x - 100, player.y, 5, 'blue', 2, this.ctx);
+        atk = new cProjectile(player.x - 100, player.y, 5, player.color, 2, this.ctx);
       }
       this.attacks.push(atk);
 
       enemies.forEach((knight)=> {
           console.log(atk.position, knight.position)
           if(atk.x === knight.x && atk.y === knight.y) {
-              knight.health -= 1
+              knight.health -= 1;
               if (knight.health <= 0) {
-                  console.log(knight.idx);
-                  delete enemies[knight.idx]
+                  delete enemies[knight.idx];
+                  this.death(knight);
               }
           }
           
@@ -106,6 +105,10 @@ export class playerAction  {
         atk.active = false;
         player.active = false;
       }, 250)
+  }
+
+  death = (player) => {
+    this.grid.toggleSpace(Math.floor(player.x / 100), Math.floor(player.y / 100));
   }
 }
 
