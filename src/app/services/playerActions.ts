@@ -31,33 +31,32 @@ export class playerAction  {
   }
 
   move = (direction, player) => {
-    // let tempX = player.x;
-    // let tempY = player.y;
+    console.log(typeof direction)
     let idxY = Math.floor(player.y / 100);
     let idxX = Math.floor(player.x / 100);
-    console.log(this.grid.matrix, idxX, idxY)
-    this.grid.toggleSpace(idxX, idxY)
-    if (direction === 'w') {
-      if (this.grid.matrix[idxY - 1] && this.grid.matrix[idxY - 1][idxX]){
+    let lowerCase = direction === direction.toLowerCase();
+    direction = direction.toLowerCase();
+    this.grid.toggleSpace(idxX, idxY);
+    if (direction === 'w' || direction === 'ArrowUp') {
+      if (this.grid.matrix[idxY - 1] && this.grid.matrix[idxY - 1][idxX] && lowerCase){
           player.y -= 100
         }
         player.direction = 'up';
 
-    } else if (direction === 'd') {
-      if (this.grid.matrix[idxY][idxX + 1]){
+    } else if (direction === 'd' || direction === 'ArrowRight') {
+      if (this.grid.matrix[idxY][idxX + 1] && lowerCase){
           player.x += 100
       }
       player.direction = 'right';
-      console.log(player)
-      //player.position.rotate(Math.PI*0,3)
-    } else if (direction === 's') {
 
-      if (this.grid.matrix[idxY + 1] && this.grid.matrix[idxY + 1][idxX]){
+    } else if (direction === 's' || direction === 'ArrowDown') {
+      if (this.grid.matrix[idxY + 1] && this.grid.matrix[idxY + 1][idxX] && lowerCase){
           player.y += 100
       }
       player.direction = 'down';
-    } else if (direction === 'a') {
-      if (this.grid.matrix[idxY][idxX - 1]) { //needs to be idx +1
+
+    } else if (direction === 'a' || direction === 'ArrowLeft') {
+      if (this.grid.matrix[idxY][idxX - 1] && lowerCase) {
           player.x -= 100
       }
       player.direction = 'left';
@@ -109,6 +108,21 @@ export class playerAction  {
 
   death = (player) => {
     this.grid.toggleSpace(Math.floor(player.x / 100), Math.floor(player.y / 100));
+  }
+
+  spawn = (numberOfEnemies: number) => {
+    let spawnPoints = [];
+    for (let i = 0; i < numberOfEnemies; i++){
+      let spawn = Math.random() * 5
+      if (!spawnPoints.includes(spawn)) {
+        spawnPoints.push(spawn);
+      } else {
+        i--;
+      }
+    }
+    spawnPoints.forEach((spawn: number) => {
+      this.newPlayer
+    })
   }
 }
 

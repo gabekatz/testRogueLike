@@ -24,12 +24,11 @@ export class BattlescreenComponent implements OnInit{
 
   constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) { }
 
-  @HostListener('document:keypress', ['$event'])
+  @HostListener('window:keyup', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    event.preventDefault();
+      event.preventDefault();
     if (!this.player1.active){
         let key = event.key;
-        console.log(key)
         if (key === ' ') {
             this.playerAction.attack(this.player1, this.eKnight);
         }
@@ -42,20 +41,22 @@ export class BattlescreenComponent implements OnInit{
     this.ctx = this.canvas.getContext("2d");
     this.grid.defineCtx(this.ctx, this.width, this.height);
     this.playerAction.init();
-    this.player1 = this.playerAction.newPlayer(50, 50, "blue",  3);
-    this.eKnight[0] = this.playerAction.newPlayer(750,750, 'red',1, this.enemyCount); 
+    this.player1 = this.playerAction.newPlayer(150, 150, "blue",  3);
+    this.eKnight[0] = this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red',1, this.enemyCount); 
     this.enemyCount++;
-    this.eKnight[1] = this.playerAction.newPlayer(850,750, 'green', 1, this.enemyCount);
+    this.eKnight[1] = this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', 1, this.enemyCount);
     this.enemyCount++;
     setInterval(() => {
         this.AI.moveKnights(this.eKnight, this.player1);
     }, 1000)
+
+
     this.loop();
   }
   
   loop = () => {
     requestAnimationFrame(this.loop);
-    // this.ctx.fillStyle = "white";
+    this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, 1300, 800);
     this.eKnight.forEach((knight) => {
         knight.draw();
@@ -67,6 +68,7 @@ export class BattlescreenComponent implements OnInit{
         }
     });
     this.grid.createGrid();
+
   }
 
 

@@ -8,11 +8,17 @@ export class gridActions{
   public height: number;
   public ctx: CanvasRenderingContext2D;
   public matrix: Array<Array<number>> = [];
+  public borders: Array<Object> = [];
+  public topRnd: number;
+  public leftRnd: number; 
+  public rightRnd: number;
+  public bottomRnd: number;
 
   constructor(
   ){
 
-  }
+
+  };
   
   defineCtx = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     this.ctx = ctx;
@@ -21,13 +27,29 @@ export class gridActions{
     let colLength = Math.floor(this.width / 100);
     let rowLength = Math.floor(this.height / 100);
     for (let i = 0; i < rowLength; i++) {
-      this.matrix.push(new Array(colLength).fill(1))
+      if (i === 0 || i === this.height / 100 - 1) {
+        this.matrix.push(new Array(colLength).fill(0));
+      } else{
+        this.matrix.push(new Array(colLength).fill(1));
+        this.matrix[i][0] = 0;
+        this.matrix[i][colLength - 1] = 0;
+      }
     }
-  }
+    this.topRnd =  Math.floor(Math.random() * (colLength - 6)) + 3;
+    this.bottomRnd = Math.floor(Math.random() * (Math.floor(colLength / 2) - 2)) + 1;
+    this.rightRnd =  Math.floor(Math.random() * (rowLength - 4)) + 3;
+    this.leftRnd = Math.floor(Math.random() * (rowLength - 4)) + 3;
+
+    this.toggleSpace(this.topRnd, 0);
+    this.toggleSpace(this.bottomRnd, rowLength - 1);
+    this.toggleSpace(this.bottomRnd * 2, rowLength - 1);
+    this.toggleSpace(0, this.leftRnd);
+    this.toggleSpace(colLength - 1, this.rightRnd);
+  };
 
   createGrid = () => {
+    this.borderSquares();
     this.ctx.strokeStyle = 'white';
-
     for (let i = 0; i <= this.width * 10; i += 100) {
         this.ctx.beginPath();
         this.ctx.moveTo(i, 0);
@@ -40,16 +62,51 @@ export class gridActions{
         this.ctx.lineTo(this.width,j);
         this.ctx.stroke();
     }
+
   };
 
   toggleSpace = (x, y) => {
     let space = this.matrix[y][x];
     this.matrix[y][x] = space === 1 ? 0 : 1
-  }
+  };
 
-  // unOccupySpace = (x, y) => {
-  //   this.matrix[Math.floor(y/100)][Math.floor(x/100)] = 1;
-  //   console.log(this.matrix);
-  // }
+  defineBorders = () => {
+    
+  };
   
+  borderSquares = () => {
+    // this.toggleSpace(x,y);
+    // this.ctx.rect(x, y, 100, 100);
+    // ctx.beginPath();
+    this.ctx.fillStyle = 'gray';
+    this.ctx.fillRect(0, 0, 300, 100);
+    this.ctx.fillRect(0, 0, 100, 300);
+    this.ctx.fillRect(this.width - 100, 0, 100, 300);
+    this.ctx.fillRect(this.width, 0, -300, 100);
+    this.ctx.fillRect(0, this.height - 100, 100, 100);
+    this.ctx.fillRect(this.width - 100, this.height - 100, 100, 100);
+
+    for (let i = 1; i < this.width / 100; i++) {
+      if (i !== this.topRnd) {
+        this.ctx.fillRect(i * 100, 0, 100, 100);
+      }
+      if (i !== this.bottomRnd && i !== this.bottomRnd * 2) {
+        this.ctx.fillRect(i * 100, this.height - 100, 100, 100);
+      }
+    }
+
+    for (let i = 3; i < this.height / 100 - 1; i++) {
+      if (i !== this.leftRnd) {
+        this.ctx.fillRect(0, i * 100, 100, 100);
+      }
+      if (i !== this.rightRnd) {
+        this.ctx.fillRect(this.width - 100, i * 100, 100, 100);
+      }
+    }
+
+  };
+
+  waterSquare = () => {
+
+  };
 }
