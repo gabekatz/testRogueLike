@@ -9,6 +9,9 @@ export class playerAction  {
   public height: number;
   public attacks: Array<cProjectile> = [];
   public ctx: CanvasRenderingContext2D;
+  public eArray: Array<cPlayer> = [];
+  public enemyCount: number = 0;
+  public pArray: Array<cPlayer> = [];
 
   constructor(
     public grid: gridActions,
@@ -25,13 +28,19 @@ export class playerAction  {
     this.height = this.grid.height;
   }
 
-  newPlayer = (x, y, color, hp, characterIdx?) => {
-    this.grid.toggleSpace(Math.floor(x / 100), Math.floor(y / 100))
-    return new cPlayer(x, y, 50, color, 2, this.grid.ctx, hp, characterIdx)
+  newPlayer = (x, y, color, hp, enemy) => {
+    this.grid.toggleSpace(Math.floor(x / 100), Math.floor(y / 100));
+    let player = new cPlayer(x, y, 50, color, 2, this.grid.ctx, hp, this.enemyCount);
+    if (enemy){ 
+      this.enemyCount++;
+      this.eArray.push(player);
+    } else {
+      this.pArray.push(player);
+    }
+    return player;
   }
 
   move = (direction, player) => {
-    console.log(typeof direction)
     let idxY = Math.floor(player.y / 100);
     let idxX = Math.floor(player.x / 100);
     let lowerCase = direction === direction.toLowerCase();
@@ -62,19 +71,10 @@ export class playerAction  {
       player.direction = 'left';
     }
     this.grid.toggleSpace(Math.floor(player.x / 100), Math.floor(player.y / 100))
-    
-    // enemies.forEach((knight) => {
-    //     console.log(knight)
-    //     if (knight.health > 0 && knight.x === player.x && knight.y === player.y) {
-    //         player.x = tempX;
-    //         player.y = tempY;
-    //     }
-    // })
-  // this.player = document.getElementById(JSON.stringify(this.currPos))
-  // this.player.style.backgroundColor = 'black'
   }
 
-  attack = (player, enemies) => {
+  attack = (player, enemy: boolean) => {
+    console.log(this.eArray, this.enemyCount)
       player.active = true;
       let atk;
       if (player.direction === 'down') {
@@ -88,17 +88,19 @@ export class playerAction  {
       }
       this.attacks.push(atk);
 
-      enemies.forEach((knight)=> {
-          console.log(atk.position, knight.position)
-          if(atk.x === knight.x && atk.y === knight.y) {
-              knight.health -= 1;
-              if (knight.health <= 0) {
-                  delete enemies[knight.idx];
+      if (!enemy){
+        this.eArray.forEach((knight)=> {
+            console.log(atk.position, knight.position)
+            if(atk.x === knight.x && atk.y === knight.y) {
+                knight.health -= 1;
+                if (knight.health <= 0) {
                   this.death(knight);
-              }
-          }
-          
-      })
+                  this.grid.toggleSpace(Math.floor(knight.x / 100), Math.floor(knight.y / 100));
+                  delete this.eArray[knight.idx];
+                }
+            }  
+        })
+      } 
 
       setTimeout(() => {
         atk.active = false;
@@ -107,21 +109,21 @@ export class playerAction  {
   }
 
   death = (player) => {
-    this.grid.toggleSpace(Math.floor(player.x / 100), Math.floor(player.y / 100));
+
   }
 
   spawn = (numberOfEnemies: number) => {
-    let spawnPoints = [];
+    let spawnPointers = [];
     for (let i = 0; i < numberOfEnemies; i++){
-      let spawn = Math.random() * 5
-      if (!spawnPoints.includes(spawn)) {
-        spawnPoints.push(spawn);
+      let spawn = Math.floor(Math.random() * 5)
+      if (!spawnPointers.includes(spawn)) {
+        spawnPointers.push(spawn);
       } else {
         i--;
       }
     }
-    spawnPoints.forEach((spawn: number) => {
-      this.newPlayer
+    spawnPointers.forEach((spawn: number) => {
+      this.newPlayer(this.grid.spawnPoints[spawn][0] + 50, this.grid.spawnPoints[spawn][1] + 50, 'green', 1, true);
     })
   }
 }

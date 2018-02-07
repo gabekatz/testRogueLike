@@ -13,7 +13,8 @@ export class gridActions{
   public leftRnd: number; 
   public rightRnd: number;
   public bottomRnd: number;
-
+  public spawnPoints: Array<Array<number>> = [];
+  public waterSquares: Array<Array<number>> = [];
   constructor(
   ){
 
@@ -45,10 +46,17 @@ export class gridActions{
     this.toggleSpace(this.bottomRnd * 2, rowLength - 1);
     this.toggleSpace(0, this.leftRnd);
     this.toggleSpace(colLength - 1, this.rightRnd);
+    this.spawnPoints.push([this.topRnd * 100, 0], 
+      [this.bottomRnd * 200, this.height - 100], 
+      [this.bottomRnd * 100, this.height - 100], 
+      [0, this.leftRnd * 100], 
+      [this.width - 100, this.rightRnd * 100]);
+    this.defineWaterSquare();
   };
 
   createGrid = () => {
     this.borderSquares();
+    this.drawWater();
     this.ctx.strokeStyle = 'white';
     for (let i = 0; i <= this.width * 10; i += 100) {
         this.ctx.beginPath();
@@ -69,15 +77,8 @@ export class gridActions{
     let space = this.matrix[y][x];
     this.matrix[y][x] = space === 1 ? 0 : 1
   };
-
-  defineBorders = () => {
-    
-  };
   
   borderSquares = () => {
-    // this.toggleSpace(x,y);
-    // this.ctx.rect(x, y, 100, 100);
-    // ctx.beginPath();
     this.ctx.fillStyle = 'gray';
     this.ctx.fillRect(0, 0, 300, 100);
     this.ctx.fillRect(0, 0, 100, 300);
@@ -106,7 +107,23 @@ export class gridActions{
 
   };
 
-  waterSquare = () => {
-
+  defineWaterSquare = () => {
+    for (let row = 1; row < this.height / 100; row++) {
+      for (let col = 1; col < this.width / 100; col++) {
+        if (this.matrix[row - 1][col] && this.matrix[row - 1][col - 1] && this.matrix[row][col - 1]) {
+          if (Math.floor(Math.random() * 2)) {
+            this.toggleSpace(col, row);
+            this.waterSquares.push([col, row]);
+          }
+        }
+      }
+    }
   };
+
+  drawWater = () => {
+    this.ctx.fillStyle = 'blue';
+    this.waterSquares.forEach((block) => {
+      this.ctx.fillRect(block[0] * 100, block[1] * 100, 100, 100)
+    });
+  }
 }

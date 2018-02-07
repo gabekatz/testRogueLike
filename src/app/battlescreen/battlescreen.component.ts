@@ -19,18 +19,16 @@ export class BattlescreenComponent implements OnInit{
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   public player1: cPlayer;
-  public eKnight: Array<cPlayer> = [];
-  public enemyCount: number = 0
 
   constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) { }
 
-  @HostListener('window:keyup', ['$event'])
+  @HostListener('window:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
       event.preventDefault();
     if (!this.player1.active){
         let key = event.key;
         if (key === ' ') {
-            this.playerAction.attack(this.player1, this.eKnight);
+            this.playerAction.attack(this.player1, false);
         }
         this.playerAction.move(key, this.player1);
     }
@@ -41,15 +39,16 @@ export class BattlescreenComponent implements OnInit{
     this.ctx = this.canvas.getContext("2d");
     this.grid.defineCtx(this.ctx, this.width, this.height);
     this.playerAction.init();
-    this.player1 = this.playerAction.newPlayer(150, 150, "blue",  3);
-    this.eKnight[0] = this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red',1, this.enemyCount); 
-    this.enemyCount++;
-    this.eKnight[1] = this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', 1, this.enemyCount);
-    this.enemyCount++;
+    this.player1 = this.playerAction.newPlayer(150, 150, "blue",  3, false);
+     this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red', true, 1); 
+    this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', true, 1);
     setInterval(() => {
-        this.AI.moveKnights(this.eKnight, this.player1);
+        this.AI.moveKnights(this.player1);
     }, 1000)
 
+    setInterval(() => {
+        this.playerAction.spawn(2);
+    }, 5000)
 
     this.loop();
   }
@@ -58,8 +57,8 @@ export class BattlescreenComponent implements OnInit{
     requestAnimationFrame(this.loop);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, 1300, 800);
-    this.eKnight.forEach((knight) => {
-        knight.draw();
+    this.playerAction.eArray.forEach((enemy) => {
+        enemy.draw();
     })
     this.player1.draw()
     this.playerAction.attacks.forEach((atk)=>{
