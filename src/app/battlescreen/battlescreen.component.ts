@@ -67,7 +67,6 @@ export class BattlescreenComponent implements OnInit{
         }
     });
     this.grid.createGrid();
-
   }
 
 
