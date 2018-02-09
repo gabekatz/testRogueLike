@@ -43,7 +43,7 @@ export class BattlescreenComponent implements OnInit{
      this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red', true, 1); 
     this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', true, 1);
     setInterval(() => {
-        this.AI.moveKnights(this.player1);
+        this.AI.moveKnights(this.playerAction.pArray);
     }, 1000)
 
     setInterval(() => {
