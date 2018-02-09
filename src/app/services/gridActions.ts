@@ -40,7 +40,8 @@ export class gridActions{
     this.bottomRnd = Math.floor(Math.random() * (Math.floor(colLength / 2) - 2)) + 1;
     this.rightRnd =  Math.floor(Math.random() * (rowLength - 4)) + 3;
     this.leftRnd = Math.floor(Math.random() * (rowLength - 4)) + 3;
-
+    
+    this.defineWaterSquare();
     this.toggleSpace(this.topRnd, 0);
     this.toggleSpace(this.bottomRnd, rowLength - 1);
     this.toggleSpace(this.bottomRnd * 2, rowLength - 1);
@@ -51,7 +52,6 @@ export class gridActions{
       [this.bottomRnd * 100, this.height - 100], 
       [0, this.leftRnd * 100], 
       [this.width - 100, this.rightRnd * 100]);
-    this.defineWaterSquare();
   };
 
   createGrid = () => {
@@ -108,9 +108,9 @@ export class gridActions{
   };
 
   defineWaterSquare = () => {
-    for (let row = 1; row < this.height / 100; row++) {
-      for (let col = 1; col < this.width / 100; col++) {
-        if (this.matrix[row - 1][col] === 1 && this.matrix[row - 1][col - 1] === 1 && this.matrix[row][col - 1] === 1) {
+    for (let row = 2; row + 1 < this.height / 100; row++) {
+      for (let col = 2; col + 1 < this.width / 100 - 1; col++) {
+        if (this.matrix[row - 1][col] === 1 && this.matrix[row - 1][col - 1] !== 2 && this.matrix[row][col - 1] === 1 && this.matrix[row][col + 1] === 1 && this.matrix[row + 1][col] === 1) {
           if (Math.floor(Math.random() * 2)) {
             this.matrix[row][col] = 2;
             this.waterSquares.push([col, row]);
