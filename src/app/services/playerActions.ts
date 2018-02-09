@@ -47,25 +47,25 @@ export class playerAction  {
     direction = direction.toLowerCase();
     this.grid.toggleSpace(idxX, idxY);
     if (direction === 'w' || direction === 'ArrowUp') {
-      if (this.grid.matrix[idxY - 1] && this.grid.matrix[idxY - 1][idxX] && lowerCase){
+      if (this.grid.matrix[idxY - 1] && this.grid.matrix[idxY - 1][idxX] === 1 && lowerCase){
           player.y -= 100
         }
         player.direction = 'up';
 
     } else if (direction === 'd' || direction === 'ArrowRight') {
-      if (this.grid.matrix[idxY][idxX + 1] && lowerCase){
+      if (this.grid.matrix[idxY][idxX + 1] === 1&& lowerCase){
           player.x += 100
       }
       player.direction = 'right';
 
     } else if (direction === 's' || direction === 'ArrowDown') {
-      if (this.grid.matrix[idxY + 1] && this.grid.matrix[idxY + 1][idxX] && lowerCase){
+      if (this.grid.matrix[idxY + 1] && this.grid.matrix[idxY + 1][idxX] === 1 && lowerCase){
           player.y += 100
       }
       player.direction = 'down';
 
     } else if (direction === 'a' || direction === 'ArrowLeft') {
-      if (this.grid.matrix[idxY][idxX - 1] && lowerCase) {
+      if (this.grid.matrix[idxY][idxX - 1] === 1 && lowerCase) {
           player.x -= 100
       }
       player.direction = 'left';
