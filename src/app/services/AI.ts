@@ -101,7 +101,6 @@ export class AI {
     let moveMap: Array<Array<string>>= this.grid.matrix.map((row)=> {return row.map((num) => {return String(num)})})//new Array(row.length).fill('1'));
     let q = pArray.map((player) => [Math.floor(player.x / 100), Math.floor(player.y / 100), 0]);
     let unlocked: Array<Array<number>> = [];
-    console.log('moveMap', moveMap)
 
     const lock = () => {
       while (unlocked.length > 0){

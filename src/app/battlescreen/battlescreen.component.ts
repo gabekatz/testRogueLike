@@ -6,6 +6,7 @@ import { AI } from '../services/AI';
 import { gridActions } from '../services/gridActions';
 import { playerAction } from '../services/playerActions';
 
+
 @Component({
   selector: 'app-battlescreen',
   templateUrl: './battlescreen.component.html',
@@ -18,9 +19,12 @@ export class BattlescreenComponent implements OnInit{
   width: number = 1300;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  public heart: HTMLImageElement;
+  healthArr: Array<HTMLImageElement>;
   public player1: cPlayer;
 
-  constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) { }
+  constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) { 
+  }
 
   @HostListener('window:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -36,11 +40,12 @@ export class BattlescreenComponent implements OnInit{
 
   ngOnInit() {
     this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
+    this.heart = <HTMLImageElement>document.getElementById('heart');
     this.ctx = this.canvas.getContext("2d");
     this.grid.defineCtx(this.ctx, this.width, this.height);
     this.playerAction.init();
     this.player1 = this.playerAction.newPlayer(150, 150, "blue",  3, false);
-     this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red', true, 1); 
+    this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red', true, 1); 
     this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', true, 1);
     setInterval(() => {
         this.AI.moveKnights(this.playerAction.pArray);
@@ -61,13 +66,20 @@ export class BattlescreenComponent implements OnInit{
         enemy.draw();
     })
     this.player1.draw()
-    this.playerAction.attacks.forEach((atk)=>{
-        if (atk.active){
+    this.playerAction.attacks.forEach((atk) => {
+        if (atk.active) {
             atk.draw();
         }
     });
     this.grid.createGrid();
+    this.renderHearts();
   }
 
+  renderHearts = () => {
+      let health = this.playerAction.pArray[0].health
+      for (let i = 0; i < health; i++) {
+          this.ctx.drawImage(this.heart, 100 * i, 0, 100, 100)
+      }
+  }
 
 }
