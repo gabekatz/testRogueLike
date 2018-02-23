@@ -23,30 +23,30 @@ export class BattlescreenComponent implements OnInit{
   healthArr: Array<HTMLImageElement>;
   public player1: cPlayer;
 
-  constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) { 
+  constructor(public AI: AI, public grid: gridActions, public playerAction: playerAction) {
   }
 
   @HostListener('window:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
       event.preventDefault();
-    if (!this.player1.active){
+    if (!this.player1.moveActive && !this.player1.atkActive){
         let key = event.key;
         if (key === ' ') {
             this.playerAction.attack(this.player1, false);
-        }
+        }   
         this.playerAction.move(key, this.player1);
     }
   }
 
   ngOnInit() {
-    this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
     this.heart = <HTMLImageElement>document.getElementById('heart');
+    this.canvas = <HTMLCanvasElement>document.getElementById('gameCanvas');
     this.ctx = this.canvas.getContext("2d");
     this.grid.defineCtx(this.ctx, this.width, this.height);
     this.playerAction.init();
     this.player1 = this.playerAction.newPlayer(150, 150, "blue",  3, false);
-    this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red', true, 1); 
-    this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', true, 1);
+    this.playerAction.newPlayer(this.grid.bottomRnd * 100 + 50, this.height - 50, 'red', 1, true); 
+    this.playerAction.newPlayer(this.grid.bottomRnd * 200 + 50, this.height - 50, 'green', 1, true);
     setInterval(() => {
         this.AI.moveKnights(this.playerAction.pArray);
     }, 1000)
@@ -62,6 +62,7 @@ export class BattlescreenComponent implements OnInit{
     requestAnimationFrame(this.loop);
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, 1300, 800);
+    this.grid.createGrid();
     this.playerAction.eArray.forEach((enemy) => {
         enemy.draw();
     })
@@ -71,14 +72,13 @@ export class BattlescreenComponent implements OnInit{
             atk.draw();
         }
     });
-    this.grid.createGrid();
     this.renderHearts();
   }
 
   renderHearts = () => {
       let health = this.playerAction.pArray[0].health
       for (let i = 0; i < health; i++) {
-          this.ctx.drawImage(this.heart, 100 * i, 0, 100, 100)
+        this.ctx.drawImage(this.heart, 100 * i, 0, 100, 100)
       }
   }
 

@@ -27,8 +27,10 @@ export class AI {
       let py = player.y;
       let distX = Math.abs(px - x);
       let distY = Math.abs(py - y);
+      console.log(px, py, x, y)
       // let flip = Math.floor(Math.random() * 2);
-      if ((distX === 100 && distY === 0) || (distX === 0 && distY === 100)) {
+      if ((distX <= 100 && distY === 0) || (distX === 0 && distY <=  100)) {
+        console.log('should attack')
         if (px - x > 0){
           knight.direction = 'right';
         } else if (px - x < 0){
@@ -98,7 +100,7 @@ export class AI {
   }
 
   smartPath(pArray: Array<cPlayer>) {
-    let moveMap: Array<Array<string>>= this.grid.matrix.map((row)=> {return row.map((num) => {return String(num)})})//new Array(row.length).fill('1'));
+    let moveMap: Array<Array<string>>= this.grid.matrix.map((row)=> {return row.map((num) => {return String(num)})});
     let q = pArray.map((player) => [Math.floor(player.x / 100), Math.floor(player.y / 100), 0]);
     let unlocked: Array<Array<number>> = [];
 

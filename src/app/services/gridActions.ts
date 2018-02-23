@@ -57,7 +57,8 @@ export class gridActions{
   createGrid = () => {
     this.borderSquares();
     this.drawWater();
-    this.ctx.strokeStyle = 'white';
+    this.ctx.strokeStyle = 'black';
+    //enables grid lines
     for (let i = 0; i <= this.width * 10; i += 100) {
         this.ctx.beginPath();
         this.ctx.moveTo(i, 0);

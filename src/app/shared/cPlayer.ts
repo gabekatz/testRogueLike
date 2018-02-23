@@ -16,8 +16,12 @@ export class cPlayer implements iShape {
   public left: Array<number> = [Math.PI * 1.15, Math.PI * 0.85];
   public up: Array<number> = [Math.PI * 1.65, Math.PI * 1.35];
   public direction: string = 'down';
-  public active: boolean = false;
+  public atkActive: boolean = false;
+  public moveActive: boolean = false;
   public idx: number;
+  public speed: number;
+  public gridX: number;
+  public gridY: number;
   constructor(
     x: number,
     y: number,
@@ -27,15 +31,19 @@ export class cPlayer implements iShape {
     ctx: any,
     health: number,
     idx: number = 0,
+    speed: number
   ) {
     this.x = x;
     this.y = y;
+    this.gridX = Math.floor(x / 100);
+    this.gridY = Math.floor(y / 100);
     this.radius = radius;
     this.color = color;
     this.ctx = ctx;
     this.lineWidth = lineWidth;
     this.health = health;
-    this.idx = idx
+    this.idx = idx;
+    this.speed = speed;
   }
 
   public draw = (): void => {
@@ -50,7 +58,7 @@ export class cPlayer implements iShape {
       this.ctx.moveTo(this.x, this.y);
       this.ctx.arc(this.x, this.y, this.radius, this[this.direction][1], this[this.direction][0]);
       this.ctx.lineTo(this.x, this.y);
-      if (this.active) {
+      if (this.atkActive) {
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
       }
